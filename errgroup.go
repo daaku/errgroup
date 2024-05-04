@@ -34,12 +34,11 @@ func (m MultiError) Error() string {
 // it coalesces all input errors into a single error instance. Useful for
 // code like this:
 //
-//   func doThisAndThat() error {
-//     err1 := tryThis()
-//     err2 := tryThat()
-//     return errgroup.NewMultiError(err1, err2)
-//   }
-//
+//	func doThisAndThat() error {
+//	  err1 := tryThis()
+//	  err2 := tryThat()
+//	  return errgroup.NewMultiError(err1, err2)
+//	}
 func NewMultiError(errs ...error) error {
 	var multiErr MultiError
 	for _, err := range errs {
@@ -76,14 +75,20 @@ func (g *Group) Done() {
 	g.wg.Done()
 }
 
-// Error adds an error to return in Wait. The error must not be nil.
+// Error adds an error to return in Wait. `nil` errors are ignored.
 func (g *Group) Error(e error) {
 	if e == nil {
-		panic("error must not be nil")
+		return
 	}
 	g.mu.Lock()
 	defer g.mu.Unlock()
 	g.errors = append(g.errors, e)
+}
+
+// Finish adds an error if not nil, and calls Done.
+func (g *Group) Finish(e error) {
+	g.Error(e)
+	g.Done()
 }
 
 // Wait blocks until the Group counter is zero. If no errors were recorded, it

@@ -32,19 +32,20 @@ func TestTwoErrors(t *testing.T) {
 	ensure.DeepEqual(t, g.Wait().Error(), "multiple errors: e1 | e2")
 }
 
-func TestInvalidNilError(t *testing.T) {
-	defer ensure.PanicDeepEqual(t, "error must not be nil")
-	(&errgroup.Group{}).Error(nil)
+func TestIgnoredNilError(t *testing.T) {
+	var g errgroup.Group
+	g.Error(nil)
+	ensure.Nil(t, g.Wait())
 }
 
 func TestInvalidZeroLengthMultiError(t *testing.T) {
 	defer ensure.PanicDeepEqual(t, "MultiError with no errors")
-	(errgroup.MultiError{}).Error()
+	_ = (errgroup.MultiError{}).Error()
 }
 
 func TestInvalidOneLengthMultiError(t *testing.T) {
 	defer ensure.PanicDeepEqual(t, "MultiError with only 1 error")
-	(errgroup.MultiError{errors.New("")}).Error()
+	_ = (errgroup.MultiError{errors.New("")}).Error()
 }
 
 func TestAddDone(t *testing.T) {
@@ -86,4 +87,12 @@ func TestNewMultiError(t *testing.T) {
 	ensure.DeepEqual(t, multiErrNilAB, expected)
 	ensure.DeepEqual(t, multiErrANilB, expected)
 	ensure.DeepEqual(t, multiErrABNil, expected)
+}
+
+func TestFinish(t *testing.T) {
+	t.Parallel()
+	var g errgroup.Group
+	g.Add(1)
+	g.Finish(nil)
+	ensure.Nil(t, g.Wait())
 }
