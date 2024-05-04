@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/facebookgo/ensure"
-	"github.com/facebookgo/errgroup"
+	"github.com/daaku/ensure"
+	"github.com/daaku/errgroup"
 )
 
 func TestNada(t *testing.T) {

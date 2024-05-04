@@ -1,4 +1,3 @@
-errgroup [![Build Status](https://secure.travis-ci.org/facebookgo/errgroup.png)](https://travis-ci.org/facebookgo/errgroup)
-========
+# errgroup
 
-Documentation: https://godoc.org/github.com/facebookgo/errgroup
+Documentation: https://pkg.go.dev/github.com/daaku/errgroup
